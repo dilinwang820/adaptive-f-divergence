@@ -63,11 +63,8 @@ class Trainer(object):
             config.method,
             config.alpha,
         )
+        self.train_dir = './train_dir/%s' % self.filepath
 
-        self.train_dir = '/data/dilin/bayesnn/train_dir/%s' % self.filepath
-        #self.fig_dir = './figures/%s' % self.filepath
-
-        #for folder in [self.train_dir, self.fig_dir]:
         for folder in [self.train_dir]:
             if not os.path.exists(folder):
                 os.makedirs(folder)
@@ -75,8 +72,6 @@ class Trainer(object):
             if self.config.clean:
                 files = glob.glob(folder + '/*')
                 for f in files: os.remove(f)
-
-        #log.infov("Train Dir: %s, Figure Dir: %s", self.train_dir, self.fig_dir)
 
         # --- create model ---
         self.model = Model(config)
@@ -101,11 +96,7 @@ class Trainer(object):
         self.summary_writer = tf.summary.FileWriter(self.train_dir)
         self.checkpoint_secs = 300  # 5 min
 
-        self.kl_weight = tf.get_variable('kl_weight', initializer=tf.constant(1.))
-        self.svgd_weight = tf.get_variable('svgd_weight', initializer=tf.constant(1.))
-
         self.train_op = self.optimize_adam( self.model.kl_loss, lr=self.learning_rate)
-        #self.train_op = self.optimize_adagrad( self.model.kl_loss, lr=self.learning_rate)
 
         tf.global_variables_initializer().run()
         if config.checkpoint is not None:
@@ -127,6 +118,7 @@ class Trainer(object):
             'X':self.dataset.x_test,
             'y':self.dataset.y_test,
         }
+
         n_updates = 0
         for ep in xrange(self.config.n_epoches):
             x_train, y_train = shuffle(self.dataset.x_train, self.dataset.y_train)
@@ -199,7 +191,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--n_epoches', type=int, default=500, required=False)
-    parser.add_argument('--method', type=str, default='alpha', choices=['alpha', 'cdf', 'negcdf'], required=True)
+    parser.add_argument('--method', type=str, default='alpha', choices=['alpha', 'adapted'], required=True)
     parser.add_argument('--dataset', type=str, default='boston', required=True)
     parser.add_argument('--alpha', type=float, default=0, required=False)
     parser.add_argument('--batch_size', type=int, default=32, required=False)
@@ -220,15 +212,12 @@ def main():
 
     session_config = tf.ConfigProto(
         allow_soft_placement=True,
-        # intra_op_parallelism_threads=1,
-        # inter_op_parallelism_threads=1,
         gpu_options=tf.GPUOptions(allow_growth=True),
-        #device_count={'GPU': 1},
     )
     with tf.Graph().as_default(), tf.Session(config=session_config) as sess:
         with tf.device('/gpu:%d'% config.gpu):
             from collections import namedtuple
-            dataStruct = namedtuple("dataStruct", "x_train x_test y_train, y_test, mean_y_train, std_y_train")
+            dataStruct = namedtuple("dataStruct", "x_train, x_test, y_train, y_test, mean_y_train, std_y_train")
 
             x_train, x_test, y_train, y_test, mean_y_train, std_y_train = load_uci_dataset(config.dataset, config.trial)
             config.n_train, config.dim = x_train.shape

@@ -126,7 +126,7 @@ class Model():
     def phi(self, n_samples, lpx, lqx, method, alpha=0):
 
         diff = lpx - lqx
-        if method == 'cdf' or method == 'negcdf':
+        if method == 'adapted':
             # \#(t_i < t)
             diff -= tf.reduce_max(diff)
             dx = tf.exp(diff)
@@ -134,22 +134,11 @@ class Model():
             #prob = tf.cast(tf.equal(prob, -1), tf.float32)
             prob = tf.cast(tf.greater(prob, 0.5), tf.float32)
             wx = tf.reduce_sum(prob, axis=1) / n_samples
-            if method == 'cdf':
-                wx = (1./n_samples+wx) ** alpha # >0; alpha=1, cdf; alpha=-1, inverse_cdf; 
-            else:
-                wx = (1.-wx)**alpha ## alpha= -1;
+            wx = (1.-wx)**alpha ## alpha= -1 or alpha = -0.5
         elif method == 'alpha':
             diff = alpha * diff
             diff -= tf.reduce_max(diff)
             wx = tf.exp(diff)
-        elif method == 'log':
-            logw = tf.abs(diff)
-            prob = tf.sign(tf.expand_dims(logw, 1) - tf.expand_dims(logw, 0))
-            prob = tf.cast(tf.equal(prob, 1), tf.float32)
-            wx = tf.reduce_sum(prob, axis=1) / n_samples # max = (n-1)/n
-            wx = 1. / (1. - wx)
-        elif method == 'ess':
-            raise NotImplementedError
         else:
             raise NotImplementedError
 

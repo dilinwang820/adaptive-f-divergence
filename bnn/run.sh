@@ -26,24 +26,23 @@ super_block() {
     n_hidden=$4
     n_splits=$5
 
-    #run_block negcdf -1.0 $epochs $dataset $K $n_hidden $n_splits & p1=$!
-    #run_block negcdf -2.0 $epochs $dataset $K $n_hidden $n_splits & p2=$!
-    #run_block negcdf -0.5 $epochs $dataset $K $n_hidden $n_splits & p3=$!
-    #run_block alpha -1.0 $epochs $dataset $K $n_hidden $n_splits & p4=$!
+    #run_block negcdf -1.0 $epochs $dataset $K $n_hidden $n_splits & 
+    #run_block negcdf -2.0 $epochs $dataset $K $n_hidden $n_splits & 
+    #run_block negcdf -0.5 $epochs $dataset $K $n_hidden $n_splits & 
+    #run_block alpha -1.0 $epochs $dataset $K $n_hidden $n_splits &
 
-    #echo "waitting ..." $p1 $p2 $p3 $p4
-    #wait $p1 $p2 $p3 $p4
+    #wait
 
-    #run_block alpha 0.0 $epochs $dataset $K $n_hidden $n_splits & p5=$!
-    #run_block alpha 0.5 $epochs $dataset $K $n_hidden $n_splits & p6=$!
-    #run_block alpha 1.0 $epochs $dataset $K $n_hidden $n_splits & p7=$!
-    #run_block alpha 2.0 $epochs $dataset $K $n_hidden $n_splits & p8=$!
+    #run_block alpha 0.0 $epochs $dataset $K $n_hidden $n_splits &
+    #run_block alpha 0.5 $epochs $dataset $K $n_hidden $n_splits &
+    #run_block alpha 1.0 $epochs $dataset $K $n_hidden $n_splits &
+    #run_block alpha 2.0 $epochs $dataset $K $n_hidden $n_splits &
 
-    #echo "waitting ..." $p5 $p6 $p7 $p8
-    #wait $p5 $p6 $p7 $p8
-    #run_block alpha 500.0 $epochs $dataset $K $n_hidden $n_splits
-    run_block alpha -1.0 $epochs $dataset $K $n_hidden $n_splits
+    #wait
+
+    run_block negcdf -1.0 $epochs $dataset $K $n_hidden $n_splits
 }
+
 
 ### boston ###
 epochs=500

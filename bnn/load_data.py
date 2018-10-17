@@ -15,7 +15,7 @@ import numpy as np
 from math import pi
 import pprint
 
-base_dir = '/home/dilin/Dropbox/code/tf_matching/renyi/VRbound/BayesianNN/data/'
+base_dir = './data/'
 
 def load_uci_dataset(dataset, i):
     # We load the data
@@ -50,51 +50,4 @@ def load_uci_dataset(dataset, i):
     y_test = np.array(y_test, ndmin = 2).reshape((-1, 1))
 
     return X_train, X_test, np.squeeze(y_train), np.squeeze(y_test), mean_y_train, std_y_train
-
-
-def main(_):
-
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--method', type=str, default='alpha', choices=['alpha', 'cdf', 'negcdf', 'log'], required=False)
-    parser.add_argument('--alpha', type=float, default=0, required=False)
-    parser.add_argument('--beta', type=float, default=-1, required=False)
-    parser.add_argument('--dim', type=int, default=13, required=False)
-    parser.add_argument('--batch_size', type=int, default=32, required=False)
-    parser.add_argument('--sample_size', type=int, default=100, required=False)
-    parser.add_argument('--n_hidden', type=int, default=100, required=False)
-    parser.add_argument('--k', type=int, default=10, required=False)
-    config = parser.parse_args()
-
-    from model_bayesnn import Model
-    x_train, x_test, y_train, y_test, mean_y_train, std_y_train = load_uci_dataset('boston', 1)
-    config.n_train = len(x_train)
-    config.dim = x_train.shape[1]
-
-    with tf.Graph().as_default(), tf.Session() as sess:
-
-        model = Model(config)
-
-        tf.global_variables_initializer().run()
-        batch_chunk = {
-            'X': x_train[:config.batch_size],
-            'y': y_train[:config.batch_size]
-        }
-        print(
-            sess.run(model.kl_loss, feed_dict=model.get_feed_dict(batch_chunk))
-        )
-        batch_test = {
-            'X': x_test,
-            'y': y_test
-        }
- 
-        print(
-            sess.run(model.get_error_and_ll(model.X, model.y, location=mean_y_train, scale=std_y_train), feed_dict=model.get_feed_dict(batch_test)) 
-        )
-
-
-if __name__ == "__main__":
-    tf.app.run()
-
-
 
