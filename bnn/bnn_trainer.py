@@ -8,7 +8,7 @@ import numpy as np
 from pprint import pprint
 import sys
 
-from util import log
+from log_util import log
 import os
 import glob
 import time

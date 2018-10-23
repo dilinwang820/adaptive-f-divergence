@@ -15,7 +15,7 @@ class Model():
         self.p_target  = p_target
 
         with tf.variable_scope(scope_name) as scope:
-            if self.config.proposer == 'mixture':
+            if self.config.proposal == 'mixture':
                 n_components = 20
                 self._mu = tf.get_variable('mu', shape=(n_components, self.config.dim), dtype=tf.float32,
                                         initializer=tf.random_uniform_initializer(-15., 15.))
@@ -32,7 +32,8 @@ class Model():
             else:
                 raise NotImplementedError
 
-        self.q_train_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope_name)
+        self.q_train_vars = [self._mu, self._log_var, self._weights]
+        #self.clip_op = tf.assign(self._log_var, tf.clip_by_value(self._log_var, -1., 1.))
 
         self.loss = self.get_f_div_loss(self.config.sample_size)
         tf.summary.scalar("loss", self.loss)
@@ -62,7 +63,7 @@ class Model():
             prob = tf.sign(tf.expand_dims(dx, 1) - tf.expand_dims(dx, 0))  
             prob = tf.cast(tf.greater(prob, 0.5), tf.float32)
             wx = tf.reduce_sum(prob, axis=1) / n_samples
-            wx = (1. - wx) ** alpha ## beta = -1;
+            wx = (1. - wx) ** alpha ## beta = -1; or beta = -0.5
         elif method == 'alpha':
             diff = alpha * diff
             diff -= tf.reduce_max(diff)

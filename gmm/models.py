@@ -196,10 +196,11 @@ class GaussianMixture():
             raw = tf.random_normal([n_samples, self.dim])
             ret = agg_mu + tf.sqrt(agg_var) * raw # n x d 
 
+            #cat_probs = self._cat(n_samples)  # n x c
             #samples_class = [None for _ in range(self.n_components)]
             #for c in range(self.n_components):
             #    raw = tf.random_normal([n_samples, self.dim])
-            #    samples_class_c = self._mu[c] + raw * tf.sqrt(self._sigma[c]) #tf.matmul(raw, tf.transpose(self._scale[c]))
+            #    samples_class_c = self._mu[c] + raw * tf.sqrt(self._var[c]) #tf.matmul(raw, tf.transpose(self._scale[c]))
             #    samples_class[c] = samples_class_c
             #samples_class = tf.stack(samples_class) # c x n x d
             #ret = tf.reduce_sum(tf.expand_dims(cat_probs, 2) * tf.transpose(samples_class, [1,0,2]), axis=1)
@@ -235,87 +236,3 @@ class GaussianMixture():
             var += ( self._weights[i] * ((self._mu[i] - mu)**2 + self._var[i]) )
         return mu, var
 
-
-def main(_):
-
-    with tf.Graph().as_default(), tf.Session() as sess:
-
-        n_components = 2
-        dim = 2
-
-        #X0 = tf.constant(np.asarray([[1, 2], [1, 3], [1,4]]), dtype=tf.float32)
-        #mu0 = tf.constant(np.asarray([[1, 0], [0, 2]]), dtype=tf.float32)
-        #log_sigma = np.asarray([[.2, .1], [.1, .3]]).astype('float32')
-        #weights0 = tf.constant(np.asarray([.2, .8]), dtype=tf.float32)
-
-        #model = GaussianMixture(n_components, mu0, log_sigma, weights0, is_train=True)
-
-        #print(sess.run(model._sigma))
-        #print(sess.run(model._mu))
-        #print(sess.run(model._weights))
-
-        X0 = tf.constant(np.asarray([[1, 2], [1, 3], [1,4]]), dtype=tf.float32)
-        mu0 = tf.constant(np.asarray([2, 3]), dtype=tf.float32)
-        log_sigma = np.asarray([0, 0]).astype('float32')
-        model = MultiVariateGaussian(mu0, log_sigma)
-
-        print(sess.run(model._mu))
-        print(sess.run(model._sigma))
-        grads = sess.run( model.log_gradient(X0))
-        print (grads)
-        print (sess.run(model.log_prob(X0)))
-
-        #with tf.variable_scope('random') as scope:
-        #    random_offset = tf.get_variable('random_offset', dtype=tf.float32,
-        #      initializer=tf.constant(np.random.uniform(0., 2, (10,)).astype('float32')),
-        #    )
-        #    weights = tf.get_variable('weights', dtype=tf.float32,
-        #        initializer=tf.constant(np.random.normal(0., 1., (10, 20)).astype('float32')),
-        #    )
-
-        #t = tf.get_variable('t', dtype=tf.float32,
-        #        initializer=tf.constant(np.ones((4, 2)).astype('float32')),
-        #)
-
-        #variables_names = [v.name for v in tf.trainable_variables()]
-        ##print (sess.run(variables_names))
-        #print (variables_names)
-
-        #train_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,
-        #                    "random/")
-
-        #ft = t**2
-        #out = tf.stack([tf.gradients(ft[:,i], [t])[0] for i in range(2)])
-        #print (sess.run(out))
-        #    
-        ##logp = sess.run(model.logp_gmm(X0) )
-        ##print (logp)
-        ##grad = sess.run(model.score_gmm(X0) )
-        ##print (grad)
-
-        #X0 = tf.constant(np.asarray([[1, 2], [1, 3], [1,4]]), dtype=tf.float32)
-        #mu0 = tf.constant(np.asarray([1, 2]), dtype=tf.float32)
-        #cov0 = tf.constant(np.asarray([[2,1],[1, 2]]), dtype=tf.float32)
-
-        #scale0 = tf.cholesky(cov0)
-        #print( sess.run(tf.matmul(scale0, tf.transpose(scale0))) ) 
-        #logp = sess.run(logp_mvn(X0, mu0, scale0) )
-        #print (logp)
-        #grad = sess.run(score_mvn(X0, mu0, scale0) )
-        #print (grad)
-
-        #samples = sess.run(samples_mvn(3000, mu0, scale0))
-        #print (np.mean(samples, 0))
-        #print (np.cov(samples.T))
-
-        #a = tf.constant(np.arange(1, 13, dtype=np.int32),
-        #                shape=[2, 2, 3])
-        #b = tf.constant(np.arange(13, 25, dtype=np.int32),
-        #                shape=[2, 2, 3])
-        #print(sess.run(tf.matmul(a, b, transpose_b=True)))
-        #print(sess.run(tf.matmul(a, tf.transpose(b, perm=[0,2,1]))))
-        #dist = tf.distributions.Categorical(probs=weights0)
-        #print( sess.run(dist.sample(int(10))) )
-
-if __name__ == "__main__":
-    tf.app.run()

@@ -26,21 +26,21 @@ super_block() {
     n_hidden=$4
     n_splits=$5
 
-    #run_block negcdf -1.0 $epochs $dataset $K $n_hidden $n_splits & 
-    #run_block negcdf -2.0 $epochs $dataset $K $n_hidden $n_splits & 
-    #run_block negcdf -0.5 $epochs $dataset $K $n_hidden $n_splits & 
+    #run_block adapted -2.0 $epochs $dataset $K $n_hidden $n_splits & 
+    #run_block adapted -1.0 $epochs $dataset $K $n_hidden $n_splits & 
+    #run_block adapted -0.5 $epochs $dataset $K $n_hidden $n_splits & 
     #run_block alpha -1.0 $epochs $dataset $K $n_hidden $n_splits &
-
-    #wait
-
     #run_block alpha 0.0 $epochs $dataset $K $n_hidden $n_splits &
     #run_block alpha 0.5 $epochs $dataset $K $n_hidden $n_splits &
     #run_block alpha 1.0 $epochs $dataset $K $n_hidden $n_splits &
     #run_block alpha 2.0 $epochs $dataset $K $n_hidden $n_splits &
-
     #wait
 
-    run_block negcdf -1.0 $epochs $dataset $K $n_hidden $n_splits
+    run_block adapted -1.0 $epochs $dataset $K $n_hidden $n_splits
+    run_block adapted -0.5 $epochs $dataset $K $n_hidden $n_splits
+    run_block alpha 0.0 $epochs $dataset $K $n_hidden $n_splits 
+    run_block alpha 0.5 $epochs $dataset $K $n_hidden $n_splits
+    run_block alpha 1.0 $epochs $dataset $K $n_hidden $n_splits 
 }
 
 
@@ -51,6 +51,10 @@ K=100
 n_hidden=50
 n_splits=20
 super_block $epochs $dataset $K $n_hidden $n_splits
+
+exit 0 
+
+
 
 
 ### concrete ###

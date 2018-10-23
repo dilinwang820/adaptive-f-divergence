@@ -18,7 +18,6 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
-#from matplotlib.backends.backend_pdf import PdfPages
 
 from model_f_divergence import Model
 from models import GaussianMixture
@@ -63,7 +62,7 @@ class Trainer(object):
         )
 
         self.train_dir = './train_dir/seed_%d/scale_%d/%s' % (self.config.seed, self.config.scale, self.filepath)
-        self.fig_dir = './figures/seed_%d/scale_%d/%s' % (self.config.seed, self.config.scale, self.filepath)
+        self.fig_dir = '/home/dilin/Dropbox/tmp/figures/seed_%d/scale_%d/%s' % (self.config.seed, self.config.scale, self.filepath)
 
         for folder in [self.train_dir, self.fig_dir]:
             if not os.path.exists(folder):
@@ -97,7 +96,6 @@ class Trainer(object):
         self.saver = tf.train.Saver(max_to_keep=1)
         self.summary_writer = tf.summary.FileWriter(self.train_dir)
         self.checkpoint_secs = 300  # 5 min
-
 
         self.train_op = self.optimize_adagrad(self.model.loss, 
                             train_vars=self.model.q_train_vars, lr=self.learning_rate)
@@ -133,16 +131,16 @@ class Trainer(object):
     def eval_run(self,):
         mean_p, var_p = self.session.run( self.p_target.model_mean_and_variance())
         mean_q, var_q = self.session.run( self.model.q_approx.model_mean_and_variance() )
-        var_diff = np.mean((var_p - var_q)**2)
+        var_diff = np.mean((var_q - var_p)**2)
         var_ratio = np.mean(var_q / var_p)
-        mean_diff = np.mean( (mean_p - mean_q)**2 )
+        mean_diff = np.mean( (mean_q - mean_p)**2 )
 
         q_mu, p_mu = self.session.run([self.model.q_approx._mu, self.p_target._mu])
         from scipy.spatial import distance
         dist = distance.cdist(p_mu, q_mu, 'euclidean')
         diff = np.min(dist, axis=1).mean()
 
-        with open(os.path.join(self.train_dir, 'results.log'), 'w') as f:
+        with open(os.path.join(self.train_dir, 'results.log'), 'a') as f:
             f.write('method' + ',' + self.config.method + ',' + 'alpha' + ',' + repr(self.config.alpha) + ',' + 'scale' + ',' + repr(self.config.scale) + ',' + 'seed' + ',' + repr(self.config.seed) + ',' + 'mode_shift' + ',' + repr(diff) + ','  + 'mean' + ',' + repr(mean_diff) + ',' + 'var_diff' + ',' + repr(var_diff) + ',' + 'var_ratio' + ',' + repr(var_ratio) + '\n')
 
 
@@ -170,6 +168,9 @@ class Trainer(object):
                     plt.scatter(samples[:, 0], samples[:, 1], color='b', alpha=0.5, s=10)
                     plt.savefig('%s/step-%d.png' % (self.fig_dir, n_updates))
                     plt.close()
+
+                self.eval_run()
+
 
         # save model at the end
         self.saver.save(self.session,
@@ -201,7 +202,7 @@ def main():
     parser.add_argument('--sample_size', type=int, default=256, required=False)
     parser.add_argument('--dim', type=int, default=2, required=True)
     parser.add_argument('--scale', type=int, default=5, required=False)
-    parser.add_argument('--proposer', type=str, default='mixture', choices=['mixture'], required=False)
+    parser.add_argument('--proposal', type=str, default='mixture', choices=['mixture'], required=False)
     parser.add_argument('--checkpoint', type=str, default=None, required=False)
     parser.add_argument('--learning_rate', type=float, default=5e-4, required=True)
     parser.add_argument('--lr_weight_decay', action='store_true', default=False)
