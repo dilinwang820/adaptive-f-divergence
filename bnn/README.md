@@ -14,5 +14,5 @@ Use `run.sh` to reproduce our results in Table 1.
 
 
 ### References
-Our code is based on the implementation of [Variational Renyi Bound](https://github.com/YingzhenLi/VRbound)
+Our code is based on the implementation of [Variational Renyi Bound](https://github.com/YingzhenLi/VRbound).
 
