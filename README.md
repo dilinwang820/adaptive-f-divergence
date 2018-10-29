@@ -1,4 +1,4 @@
-#Variational Inference with Tail-adaptive f-Divergence
+# Variational Inference with Tail-adaptive f-Divergence
 
 
 ```python
