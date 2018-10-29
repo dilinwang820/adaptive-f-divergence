@@ -1,5 +1,13 @@
 # Variational Inference with Tail-adaptive f-Divergence
 
+This repository contains a tensorflow implementation for tail-adaptive f-divergence, as presented in the followng paper:
+
+[Dilin Wang](http://cs.utexas.edu/~dilin), [Hao Liu](http://haoliu.site/), [Qiang Liu](https://www.cs.utexas.edu/~lqiang/), ["Variational Inference with Tail-adaptive f-Divergence"](https://nips.cc/Conferences/2018/Schedule?showEvent=11559), NIPS 2018.
+
+
+## Our Algorithm
+
+
 
 ```python
 def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
@@ -22,3 +30,5 @@ def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
     
     wx /= tf.reduce_sum(wx)  # self-normalization
     return tf.stop_gradient(wx)
+
+
