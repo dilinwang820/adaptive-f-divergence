@@ -1,7 +1,7 @@
 # Bayesian Neural Networks for Regression
 
 
-A Tensorflow implementation of safe f-divergence for Bayesian neural network. 
+A Tensorflow implementation of tail-adaptive f-divergence for Bayesian neural network. 
 
 
 ### Using the code
