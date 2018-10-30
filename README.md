@@ -7,7 +7,7 @@ This repository contains a tensorflow implementation for tail-adaptive f-diverge
 
 ## Our Algorithm
 
-
+Our tail-adaptive weights could be easily calculated with the following function,
 
 ```python
 def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
@@ -30,5 +30,4 @@ def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
     
     wx /= tf.reduce_sum(wx)  # self-normalization
     return tf.stop_gradient(wx)
-
-
+```
