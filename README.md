@@ -7,7 +7,7 @@ This repository contains a tensorflow implementation for tail-adaptive f-diverge
 
 ## Our Algorithm
 
-Our tail-adaptive weights could be easily calculated with the following function,
+Our tail-adaptive weights ($\gamma_f$ in Eqn 8) could be easily calculated with the following function,
 
 ```python
 def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
