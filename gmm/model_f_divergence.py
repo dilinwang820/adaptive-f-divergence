@@ -42,14 +42,12 @@ class Model():
     def get_f_div_loss(self, n_samples):
         samples = self.q_approx.sample(n_samples)
 
-        dx_logp = self.p_target.log_prob(samples)
-        # https://arxiv.org/abs/1703.09194
-        dx_logq = self.q_approx.log_prob(samples, stop_grad=True)
+        dx_logp = self.p_target.log_gradient(samples)
+        dx_logq = self.q_approx.log_gradient(samples)
 
         wx = self.phi(n_samples, dx_logp, dx_logq, self.config.method, alpha=self.config.alpha)
-        ws = tf.stop_gradient(wx)
-
-        loss = tf.reduce_sum(wx * (dx_logq - dx_logp))
+        #loss = tf.reduce_sum(wx * (dx_logq - dx_logp))
+        loss = tf.reduce_sum(tf.stop_gradient(tf.expand_dims(wx, axis=1)*(dx_logq - dx_logp)) * samples)
         return loss
 
 
