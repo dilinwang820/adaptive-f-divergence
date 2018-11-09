@@ -31,3 +31,15 @@ def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
     wx /= tf.reduce_sum(wx)  # self-normalization
     return tf.stop_gradient(wx)
 ```
+
+
+## Citation
+If you find tail-adaptive f-divergence useful in your research, please consider citing:
+
+        @article{wang2018variational,
+          title={Variational Inference with Tail-adaptive f-Divergence},
+          author={Wang, Dilin and Liu, Hao and Liu, Qiang},
+          journal={arXiv preprint arXiv:1810.11943},
+          year={2018}
+        }
+
