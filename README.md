@@ -13,7 +13,6 @@ Our tail-adaptive weights ($\gamma_f$ in Eqn 8) could be easily calculated with 
 def get_tail_adaptive_weights(self, l_p, l_q, beta=-1.):
     """returns the tail-adaptive weights
     Args:
-        n_samples: number of Monte Carlo samples.
         l_p: log p(x), 1-d tensor, log probability of p
         l_q: log q(x), 1-d tensor, log probability of q
         beta: magnitude, default -1
