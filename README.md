@@ -10,7 +10,7 @@ This repository contains a tensorflow implementation for tail-adaptive f-diverge
 Our tail-adaptive weights ($\gamma_f$ in Eqn 8) could be easily calculated with the following function,
 
 ```python
-def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
+def get_tail_adaptive_weights(self, l_p, l_q, beta=-1.):
     """returns the tail-adaptive weights
     Args:
         n_samples: number of Monte Carlo samples.
@@ -25,7 +25,7 @@ def get_tail_adaptive_weights(self, n_samples, l_p, l_q, beta=-1.):
     dx = tf.exp(diff)
     prob = tf.sign(tf.expand_dims(dx, 1) - tf.expand_dims(dx, 0))
     prob = tf.cast(tf.greater(prob, 0.5), tf.float32)
-    wx = tf.reduce_sum(prob, axis=1) / n_samples
+    wx = tf.reduce_sum(prob, axis=1) / tf.cast(tf.size(l_p), tf.float32)
     wx = (1. - wx) ** beta # beta = -1; or beta = -0.5
     
     wx /= tf.reduce_sum(wx)  # self-normalization
