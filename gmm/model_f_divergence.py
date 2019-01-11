@@ -33,7 +33,6 @@ class Model():
                 raise NotImplementedError
 
         self.q_train_vars = [self._mu, self._log_var, self._weights]
-        #self.clip_op = tf.assign(self._log_var, tf.clip_by_value(self._log_var, -1., 1.))
 
         self.loss = self.get_f_div_loss(self.config.sample_size)
         tf.summary.scalar("loss", self.loss)
